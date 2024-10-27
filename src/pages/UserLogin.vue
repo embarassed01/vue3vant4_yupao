@@ -28,12 +28,13 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { ref } from 'vue';
 import myAxios from '../plugins/myAxios';
 import { showToast } from 'vant';
 
 const router = useRouter();
+const route = useRoute();
 
 const userAccount = ref('');
 const userPassword = ref('');
@@ -42,10 +43,13 @@ const onSubmit = async (/*values*/) => {
         userAccount: userAccount.value,
         userPassword: userPassword.value,
     });
-    console.log(res, '用户登录');
+    console.log(res + '用户登录');
+    // console.log(`${route.hash}`);  // 因为采用hashHistory模式 `#/`
     if (res.code === 0 && res.data) {
         showToast('登录成功');
-        router.replace('/');  // 替换现在页面，不会压入栈，这样back()就不会返回到这个页面了
+        const redirectUrl = route.hash ?? '/';
+        window.location.href = redirectUrl;
+        // router.replace('/');  // 替换现在页面，不会压入栈，这样back()就不会返回到这个页面了
     } else {
         showToast('登录失败');
     }

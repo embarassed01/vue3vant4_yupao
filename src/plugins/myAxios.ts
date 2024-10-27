@@ -7,7 +7,7 @@ myAxios.defaults.withCredentials = true;  // 表示在向后端发送请求时�
 
 // 全局请求拦截器
 myAxios.interceptors.request.use(function (config) {
-    console.log(`我要发请求啦`,config);
+    console.log('我要发请求啦', config);
     // do something before request is sent 
     return config;
 }, function (error) {
@@ -17,8 +17,13 @@ myAxios.interceptors.request.use(function (config) {
 
 // 全局响应拦截器 interceptorse
 myAxios.interceptors.response.use(function (response) {
-    console.log(`我收到你的响应啦`, response);
+    console.log('我收到你的响应啦', response);
     // do something with response data
+    // 未登录，跳转到登录页
+    if (response?.data?.code === 40100) {
+        const redirectUrl = window.location.href;
+        window.location.href = `/#/user/login?redirect=${redirectUrl}`;
+    }
     return response.data;  //  解💼
 }, function (error) {
     // do something with response error

@@ -1,6 +1,7 @@
 <template>
     <van-nav-bar 
-        title="标题" left-arrow @click-left="onClickLeft"   @click-right="onClickRight"
+        :title="title" 
+        left-arrow @click-left="onClickLeft"   @click-right="onClickRight"
     >
     <template #right>
         <van-icon name="search" size="18" />
@@ -43,9 +44,25 @@ import Index from "../pages/Index.vue";
 import Team from "../pages/Team.vue";
 import { ref } from 'vue';
 import { showToast } from 'vant';
-import {useRouter} from 'vue-router';
+import {useRouter, useRoute} from 'vue-router';
+import routes from "../config/route";
 
 const router = useRouter();
+const route = useRoute();
+
+const DEFAULT_TITLE = '伙伴匹配';
+const title = ref(DEFAULT_TITLE);
+
+/**
+ * 根据路由切换标题
+ */
+router.beforeEach((to, from) => {
+    const toPath = to.path;
+    const route = routes.find((route) => {
+        return toPath === route.path;
+    });
+    title.value = route?.title ?? DEFAULT_TITLE;
+});
 
 const onClickLeft = () => {
     router.push('/');
